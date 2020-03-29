@@ -7,16 +7,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class Encryption {
     private static SecretKeySpec secretKey;
     private static byte[] key;
 
     //Function that searches for the folder and encrypts them.
-    public static void search(File directory) throws FileNotFoundException {
+    public static void searchToEncrypt(File directory) throws FileNotFoundException {
         String[] filelist =directory.list(); // created and array so the files in folder can be easily accessible
         for(String name:filelist){  // do operation for each file in the folder
             FileReader file = new FileReader( directory +"/"+ name); // helps to read file
+            FileWriter writer = null;
             BufferedReader reader = new BufferedReader(file);
             String text = "";
             String line = null;
@@ -38,10 +41,12 @@ public class Encryption {
                 }
             }
             String encrypted =encrypt(text,"abc"); // Sends to encrypt function.
-            PrintWriter prw= new PrintWriter (name);
+
+            PrintWriter prw= new PrintWriter (directory+"/"+name);
             prw.println(encrypted); // replace the previous content with encrypted content
             prw.close();
-            // this algorhytm should also work if you  decrypt the file.
+
+
         }
     }
 
@@ -77,4 +82,82 @@ public class Encryption {
         }
         return null;
     }
+    public static void searchtoDecrypt(File directory)throws FileNotFoundException{
+        String[] filelist =directory.list(); // created and array so the files in folder can be easily accessible
+        for(String name:filelist){  // do operation for each file in the folder
+            FileReader file = new FileReader( directory +"/"+ name); // helps to read file
+            BufferedReader reader = new BufferedReader(file);
+            String text = "";
+            String line = null;
+            try {
+                line = reader.readLine();
+            } catch (IOException e) {
+                System.out.println("This doesn't work");
+                e.printStackTrace();
+
+            }
+            while(line !=null)
+            {
+                text +=line; // basicaly if text has multiple lines then it's just stores in one variable
+                try {
+                    line = reader.readLine();
+                } catch (IOException e) {
+                    System.out.println("This doesn't work");
+                    e.printStackTrace();
+                }
+            }
+            String decrypted =decrypt(text,"abc"); // Sends to encrypt function.
+            PrintWriter prw= new PrintWriter (directory+"/"+name);
+            prw.println(decrypted); // replace the previous content with encrypted content
+            prw.close();
+            // this algorithm should also work if you  decrypt the file.
+        }
+    }
+
+
+    public static String decrypt(String strToDecrypt, String secret)
+    {
+        try
+        {
+            setKey(secret);
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error while decrypting: " + e.toString());
+        }
+        return null;
+    }
+    public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zipOut.putNextEntry(new
+                        ZipEntry(fileName));
+                zipOut.closeEntry();
+            } else {
+                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.closeEntry();
+            }
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+            }
+            return;
+        }
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
+        }
+        fis.close();
+    }
+
 }

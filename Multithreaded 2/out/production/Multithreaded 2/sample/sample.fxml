@@ -10,19 +10,19 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
     <children>
-        <Label layoutX="102.0" layoutY="14.0" prefHeight="47.0" prefWidth="238.0" text="Search file App">
+        <Label layoutX="46.0" layoutY="14.0" prefHeight="47.0" prefWidth="294.0" text="Folder content encryption/decryption">
             <font>
                 <Font name="Candara Light" size="18.0" />
             </font>
         </Label>
-        <TextField layoutX="117.0" layoutY="66.0" />
-        <Label layoutX="67.0" layoutY="70.0" text="File:" />
-        <ProgressBar layoutX="78.0" layoutY="133.0" prefWidth="200.0" progress="0.0" />
-        <Label layoutX="88.0" layoutY="160.0" text="Time:" />
-        <Label layoutX="125.0" layoutY="160.0" text="Label" />
+        <ProgressBar fx:id="pb" layoutX="78.0" layoutY="111.0" prefWidth="200.0" progress="0.0" />
         <TextArea fx:id="text" layoutX="78.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" />
-        <Button layoutX="300.0" layoutY="142.0" mnemonicParsing="false" onAction="#handlesearch" text="Find" />
-        <Label layoutX="50.0" layoutY="105.0" text="Directory:" />
-        <TextField fx:id="directoryfield" layoutX="117.0" layoutY="101.0" />
+        <Button layoutX="312.0" layoutY="187.0" mnemonicParsing="false" onAction="#handlesearchToEncrypt" text="Encrypt" />
+        <Label layoutX="52.0" layoutY="74.0" text="Directory:" />
+        <TextField fx:id="directoryfield" layoutX="119.0" layoutY="70.0" />
+      <Button layoutX="311.0" layoutY="221.0" mnemonicParsing="false" onAction="#handlesearchToDecrypt" text="Decrypt" />
+      <Button layoutX="87.0" layoutY="139.0" mnemonicParsing="false" onAction="#handleStopThread" text="Stop" />
+      <Button layoutX="152.0" layoutY="139.0" mnemonicParsing="false" onAction="#handleResumeThread" text="Resume" />
+      <Button layoutX="306.0" layoutY="260.0" mnemonicParsing="false" onAction="#handleZip" text="Zip folder" />
     </children>
 </AnchorPane>
